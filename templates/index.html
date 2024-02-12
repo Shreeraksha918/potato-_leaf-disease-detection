@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Potato Disease Detection</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <h1>Potato Disease Detection</h1>
+    <div class="container">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="fileInput">Upload Image</label>
+            <br><br>
+            <input type="file" name="file" id="fileInput" onchange="previewImage(this)">
+            <br><br>
+            <img id="uploadedImage" src="#" alt="Uploaded Image" style="display: none; max-width: 100%;">
+            <br><br>
+            <button type="submit">Detect Disease</button>
+        </form>
+        <div id="resultDiv"></div>
+    </div>
+
+    <script>
+        function previewImage(input) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#uploadedImage').attr('src', e.target.result);
+                $('#uploadedImage').show(); // Show the uploaded image
+            }
+            reader.readAsDataURL(input.files[0]); // Read the uploaded file as a data URL
+        }
+
+        $(document).ready(function() {
+            $('#uploadForm').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    type: 'POST',
+                    url: '/',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $('#resultDiv').text('Result: ' + response.result);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
